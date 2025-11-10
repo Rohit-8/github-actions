@@ -1,0 +1,22 @@
+{
+  "name": "github-actions-mern-example",
+  "private": true,
+  "version": "0.0.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "install:all": "npm install",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --write \"**/*.{js,jsx,json,md,css,ts,tsx}\"",
+    "test": "npm run test --workspaces",
+    "test:backend": "npm --workspace packages/backend test",
+    "test:frontend": "npm --workspace packages/frontend test",
+    "build": "npm --workspaces run build"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "eslint-plugin-react": "^7.37.5",
+    "prettier": "^2.0.0"
+  }
+}
