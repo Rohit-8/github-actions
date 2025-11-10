@@ -36,6 +36,15 @@ jobs:
       - name: Show coverage files (debug)
         run: ls -l packages/frontend/coverage packages/backend/coverage || true
 
+      - name: Debug Sonar environment
+        run: |
+          echo "SONAR_TOKEN set? -> ${SONAR_TOKEN:+yes}"
+          if [ -z "${SONAR_ORGANIZATION}" ]; then
+            echo "SONAR_ORGANIZATION is not set (this will cause some SonarCloud API calls to omit organizationKey)."
+          else
+            echo "SONAR_ORGANIZATION is set"
+          fi
+
       - name: Analyze with SonarCloud
         uses: SonarSource/sonarcloud-github-action@v2
         env:
@@ -45,7 +54,6 @@ jobs:
           args: >-
             -X
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY || 'Rohit-8_github-actions' }}
             -Dsonar.sources=packages
             -Dsonar.javascript.lcov.reportPaths=packages/frontend/coverage/lcov.info,packages/backend/coverage/lcov.info
