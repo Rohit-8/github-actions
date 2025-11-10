@@ -1,28 +1,25 @@
-name: Sonar Scan
+name: SonarCloud analysis
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  pull-requests: read
 
 jobs:
-  sonar:
+  analysis:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo (full history)
+      - name: Checkout (full history)
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Check SONAR_TOKEN secret
-        run: |
-          if [ -z "${{ secrets.SONAR_TOKEN }}" ]; then
-            echo "SONAR_TOKEN secret is not set. Skipping SonarQube analysis.";
-            exit 0;
-          fi
-
-      - name: Set up Node
+      - name: Use Node 18
         uses: actions/setup-node@v4
         with:
           node-version: '18'
@@ -30,24 +27,24 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run backend tests (coverage)
+      - name: Run backend tests (Jest, coverage)
         run: npm --workspace packages/backend test
 
-      - name: Run frontend tests (coverage)
+      - name: Run frontend tests (Vitest + coverage)
         run: npm --workspace packages/frontend run test:coverage
 
-      - name: Show coverage files
-        run: ls -R packages/frontend/coverage packages/backend/coverage || true
+      - name: Show coverage files (debug)
+        run: ls -l packages/frontend/coverage packages/backend/coverage || true
 
-      - name: Run SonarQube scan
-        uses: sonarsource/sonarcloud-github-action@v1
+      - name: Analyze with SonarCloud
+        uses: SonarSource/sonarcloud-github-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
-          args: >
+          args: >-
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
-            -Dsonar.projectKey=rohit-8
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY || 'rohit-8' }}
             -Dsonar.sources=packages
             -Dsonar.javascript.lcov.reportPaths=packages/frontend/coverage/lcov.info,packages/backend/coverage/lcov.info
+          projectBaseDir: .
