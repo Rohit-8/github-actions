@@ -11,7 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ secrets.SONAR_TOKEN != '' }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -21,9 +24,21 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Run backend tests (coverage)
+        run: npm --workspace packages/backend test
+
+      - name: Run frontend tests (coverage)
+        run: npm --workspace packages/frontend run test:coverage
+
+      - name: Show coverage files
+        run: ls -R packages/frontend/coverage packages/backend/coverage || true
+
       - name: Run SonarQube scan
         uses: sonarsource/sonarcloud-github-action@v1
         with:
           args: >
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+            -Dsonar.projectKey=Rohit-8_github-actions
+            -Dsonar.sources=packages
+            -Dsonar.javascript.lcov.reportPaths=packages/frontend/coverage/lcov.info,packages/backend/coverage/lcov.info
