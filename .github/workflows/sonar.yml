@@ -40,7 +40,13 @@ jobs:
         run: |
           echo "SONAR_TOKEN set? -> ${SONAR_TOKEN:+yes}"
           if [ -z "${SONAR_ORGANIZATION}" ]; then
-            echo "SONAR_ORGANIZATION is not set (this will cause some SonarCloud API calls to omit organizationKey)."
+            echo "SONAR_ORGANIZATION is not set (this will cause some SonarCloud API calls to omit organizationKey). Using fallback 'rohit-8'."
+            export SONAR_ORGANIZATION_FALLBACK=rohit-8
+          else
+            echo "SONAR_ORGANIZATION is set"
+            export SONAR_ORGANIZATION_FALLBACK=${SONAR_ORGANIZATION}
+          fi
+          echo "SONAR_ORGANIZATION_FALLBACK=$SONAR_ORGANIZATION_FALLBACK"
           else
             echo "SONAR_ORGANIZATION is set"
           fi
@@ -54,7 +60,9 @@ jobs:
           args: >-
             -X
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.organization=${{ env.SONAR_ORGANIZATION_FALLBACK || secrets.SONAR_ORGANIZATION || 'rohit-8' }}
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY || 'Rohit-8_github-actions' }}
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.sources=packages
             -Dsonar.javascript.lcov.reportPaths=packages/frontend/coverage/lcov.info,packages/backend/coverage/lcov.info
           projectBaseDir: .
