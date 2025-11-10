@@ -41,10 +41,13 @@ jobs:
 
       - name: Run SonarQube scan
         uses: sonarsource/sonarcloud-github-action@v1
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
-            -Dsonar.projectKey=Rohit-8_github-actions
+            -Dsonar.projectKey=rohit-8
             -Dsonar.sources=packages
             -Dsonar.javascript.lcov.reportPaths=packages/frontend/coverage/lcov.info,packages/backend/coverage/lcov.info
