@@ -41,10 +41,12 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
+          # Turn on debug logging (-X) to capture detailed scanner logs for troubleshooting
           args: >-
+            -X
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY || 'rohit-8' }}
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY || 'Rohit-8_github-actions' }}
             -Dsonar.sources=packages
             -Dsonar.javascript.lcov.reportPaths=packages/frontend/coverage/lcov.info,packages/backend/coverage/lcov.info
           projectBaseDir: .
