@@ -8,6 +8,8 @@ General guidance
 How to run scans
 
 - SonarCloud: create an organization/project on sonarcloud.io, get a token, and add it as `SONAR_TOKEN` secret in GitHub.
+	- When using SonarCloud, also set the `SONAR_ORGANIZATION` secret (your SonarCloud organization key). Example from this repository: `rohit-8`.
+	- If `SONAR_ORGANIZATION` is omitted the workflow will attempt to use a reasonable fallback (`rohit-8`) to avoid sending an empty organizationKey; however it's best to set the secret so SonarCloud returns organization-scoped feature flags and settings.
 - SonarQube (self-hosted): install server, create a token, and set `SONAR_HOST_URL` to your server URL and `SONAR_TOKEN` secret in GitHub.
 
 Triggering Sonar in CI

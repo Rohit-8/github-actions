@@ -60,6 +60,6 @@ jobs:
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION || 'rohit-8' }}
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY || 'Rohit-8_github-actions' }}
-            -Dsonar.sources=packages
+            -Dsonar.sources=packages/backend/src,packages/frontend/src
             -Dsonar.javascript.lcov.reportPaths=packages/frontend/coverage/lcov.info,packages/backend/coverage/lcov.info
           projectBaseDir: .

@@ -39,6 +39,7 @@ CI & Workflows
 
 - `.github/workflows/ci.yml`: Installs dependencies, runs lint, tests, and uploads coverage artifacts.
 - `.github/workflows/sonar.yml`: Performs SonarQube/SonarCloud analysis. Requires repository secrets `SONAR_TOKEN` and `SONAR_HOST_URL` to be set in GitHub Settings > Secrets.
+- `.github/workflows/sonar.yml`: Performs SonarQube/SonarCloud analysis. For SonarCloud set `SONAR_TOKEN` and `SONAR_ORGANIZATION` (example: `rohit-8`) in GitHub Settings > Secrets. For self-hosted SonarQube set `SONAR_TOKEN` and `SONAR_HOST_URL`.
 
 Pushing and enabling GitHub Actions
 
